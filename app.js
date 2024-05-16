@@ -23,13 +23,12 @@ class mongoDataBase {
 
   async connect() {
     try {
-      console.log(this.dbName)
+      console.log(this.dbName);
       this.connection = mongoose.connect(this.uri, {
-        dbName: this.dbName
+        dbName: this.dbName,
       });
       console.log('몽고디비 연결 성공!!');
-    }
-    catch (err) {
+    } catch (err) {
       console.error('몽고디비 연결 에러', err);
     }
   }
@@ -51,7 +50,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', loginRouter);
 app.use('/', crudRouter);
 
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal server error' });
 });
