@@ -13,6 +13,7 @@ const goodsSchema = new mongoose.Schema({
   },
   details: {
     type: String,
+    required: true,
   },
   manager: {
     type: String,
@@ -20,6 +21,7 @@ const goodsSchema = new mongoose.Schema({
   },
   saleStatus: {
     type: String,
+    default: 'FOR_SALE',
   },
   createDate: {
     type: Date,

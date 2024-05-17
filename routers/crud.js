@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 
 import { goodsModel } from '../schemas/crud.query.js';
+import { createValidation, updateValidation, deleteValidation } from '../schemas/joi.js';
 
 dotenv.config();
 
@@ -11,10 +12,12 @@ const goodsPW = process.env.goodsPW;
 
 const router = express.Router();
 
-router.post('/goodsPost', async (req, res) => {
+router.post('/goodsPost', async (req, res, next) => {
   try {
+    const postValidation = await createValidation.validateAsync(req.body);
+    const { goodsId, name, details, manager, putPW } = postValidation;
+
     // const { id: user_id } = req.user;
-    const { goodsId, name, details, manager, putPW } = req.body;
 
     const goodsDuplex = await goodsModel.find({ goodsId }).exec();
     if (goodsDuplex.length > 0) {
@@ -42,8 +45,7 @@ router.post('/goodsPost', async (req, res) => {
       message: 'This goods has been successfully registered',
     });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: 'Internal server error' });
+    next(error);
   }
 });
 
@@ -77,9 +79,11 @@ router.get('/goodsSearch/:goodsId', async (req, res) => {
   }
 });
 
-router.put('/goodsUpdate/:goodsId', async (req, res) => {
+router.put('/goodsUpdate/:goodsId', async (req, res, next) => {
+  const putValidation = await updateValidation.validateAsync(req.body);
+  const { name, details, manager, putPW } = putValidation;
+
   const goodsId = Number(req.params.goodsId);
-  const { name, details, manager, putPW } = req.body;
 
   try {
     if (String(putPW) !== goodsPW) {
@@ -96,19 +100,18 @@ router.put('/goodsUpdate/:goodsId', async (req, res) => {
 
       if (goodsUpdate) {
         return res.status(200).json({ message: 'Goods updated successfully', goodsUpdate });
-      } else {
-        return res.status(404).json({ error: 'Goods not found' });
       }
     }
   } catch (error) {
-    console.error('Error fetching goods details:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    next(error);
   }
 });
 
-router.delete('/goodsDelete/:goodsId', async (req, res) => {
+router.delete('/goodsDelete/:goodsId', async (req, res, next) => {
+  const explugValidation = await deleteValidation.validateAsync(req.body);
+  const { putPW } = explugValidation;
+
   const goodsId = Number(req.params.goodsId);
-  const { putPW } = req.body;
 
   try {
     if (String(putPW) !== goodsPW) {
@@ -123,8 +126,7 @@ router.delete('/goodsDelete/:goodsId', async (req, res) => {
       }
     }
   } catch (error) {
-    console.error('Error deleting goods:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    next(error);
   }
 });
 

@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 
-import { router as loginRouter } from './routes/login.js';
-import { router as crudRouter } from './routes/crud.js';
+import { router as loginRouter } from './routers/login.js';
+import { router as crudRouter } from './routers/crud.js';
 
 dotenv.config();
 
@@ -23,7 +23,6 @@ class mongoDataBase {
 
   async connect() {
     try {
-      console.log(this.dbName);
       this.connection = mongoose.connect(this.uri, {
         dbName: this.dbName,
       });
