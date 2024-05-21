@@ -9,9 +9,9 @@ import { router as crudRouter } from './routers/crud.js';
 dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT;
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', PORT || 3000);
 
 // mongoDB connect
 
